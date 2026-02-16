@@ -1,9 +1,6 @@
-import json
-
-from api.api_requests import build_weather_url, fetch_data
+from api.api_requests import build_weather_url, mock_fetch_data
 
 if __name__ == "__main__":
     url = build_weather_url("New York")
-    data = fetch_data(url)
-    with open('data.json', 'w') as json_file:
-        json.dump(data, json_file, indent=4) 
+    # data = fetch_data(url)
+    data = mock_fetch_data("New York", 1)
