@@ -1,5 +1,5 @@
-from .weather import WeatherSettings
 from .postgres import PostgresSettings
+from .weather import WeatherSettings
 
 
 class Settings:
