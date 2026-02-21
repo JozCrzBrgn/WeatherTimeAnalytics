@@ -5,3 +5,13 @@ tasks:
   sort:
     cmds:
       - ruff check --select I --fix
+
+  install:
+    desc: Add a library to my .venv file and add it to my requirements.txt file along with its version=> task install -- library
+    vars:
+      PACKAGE: '{{.CLI_ARGS}}'
+    cmds:
+      - powershell -Command Write-Host "➕ Installing the {{.PACKAGE}} library in .venv/ ..." -ForegroundColor Green
+      - pip install {{.PACKAGE}}
+      - powershell -Command "(pip freeze | Select-String '^{{.PACKAGE}}==').Line -replace '^{{.PACKAGE}}==','{{.PACKAGE}}~=' | Out-File -Append -Encoding utf8 requirements.txt"
+      - powershell -Command Write-Host "✅ {{.PACKAGE}} installed in .venv/ and added to requirements.txt" -ForegroundColor Green
