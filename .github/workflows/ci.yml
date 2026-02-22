@@ -48,6 +48,12 @@ jobs:
             coverage report --fail-under=90
             coverage xml
 
+      - name: Validate Sonar secrets
+        run: |
+            test -n "${{ secrets.SONAR_TOKEN }}" || (echo "SONAR_TOKEN missing" && exit 1)
+            test -n "${{ secrets.SONAR_PROJECT_KEY }}" || (echo "SONAR_PROJECT_KEY missing" && exit 1)
+            test -n "${{ vars.SONAR_ORGANIZATION }}" || (echo "SONAR_ORGANIZATION missing" && exit 1)
+
       - name: Sonar Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
