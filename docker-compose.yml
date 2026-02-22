@@ -1,7 +1,7 @@
 services:
   db:
-    container_name: postgres_container
-    image: postgres:14.17
+    container_name: ${PG_CONTAINER}
+    image: postgres:${PG_TAG}
     env_file:
       - .env
     environment:
