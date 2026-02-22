@@ -77,3 +77,13 @@ tasks:
       - powershell -Command "if (Test-Path trivy_info.txt) { Remove-Item trivy_info.txt -Force }"
       - trivy image --severity CRITICAL --scanners vuln --ignore-unfixed --exit-code 1 --format table --no-progress {{.IMAGE}} > trivy_info.txt
       - powershell -Command "Write-Host '✅ Scan completed. Results saved in trivy_info.txt' -ForegroundColor Green"
+
+  # -------------------------
+  # BANDIT 
+  # -------------------------
+  bandit:
+    desc: Detect unsafe Python code => task bandit
+    cmds:
+      - powershell -Command "Write-Host '👀 Detecting unsafe Python code...' -ForegroundColor Green"
+      - bandit -r . -lll -x tests,venv,migrations > security_reports/bandit_info.txt
+      - powershell -Command "Write-Host '✅ Scan completed. Results saved in bandit_info.txt' -ForegroundColor Green"
