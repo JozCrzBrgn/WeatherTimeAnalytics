@@ -25,3 +25,9 @@ jobs:
 
       - name: Lint
         run: ruff check .
+
+      - name: Run tests
+        run: |
+            coverage run --omit="tests/*" -m pytest
+            coverage report --fail-under=90
+            coverage xml
