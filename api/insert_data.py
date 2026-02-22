@@ -3,8 +3,9 @@ import logging
 from psycopg2 import Error, connect
 from psycopg2.extensions import connection
 
-from core.config import cnf
+from core.config import get_settings
 
+cnf = get_settings()
 
 def connect_to_db() -> connection:
     """

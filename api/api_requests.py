@@ -6,7 +6,9 @@ from typing import Any, Dict
 
 import requests
 
-from core.config import cnf
+from core.config import get_settings
+
+cnf = get_settings()
 
 CITY_REGEX = re.compile(r"^[A-Za-zÀ-ÿ\s\-]+$")
 WEATHER_DESCRIPTIONS = [

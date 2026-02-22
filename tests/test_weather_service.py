@@ -5,8 +5,9 @@ import requests
 from freezegun import freeze_time
 
 from api.api_requests import build_weather_url, fetch_data, mock_fetch_data
-from core.config import cnf
+from core.config import get_settings
 
+cnf = get_settings()
 
 class MockResponse:
     def __init__(self, json_data, status_code=200):

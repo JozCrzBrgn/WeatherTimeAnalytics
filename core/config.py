@@ -1,10 +1,14 @@
+from functools import lru_cache
+
 from .postgres import PostgresSettings
 from .weather import WeatherSettings
 
 
 class Settings:
-    weather = WeatherSettings()
-    postgres = PostgresSettings()
+    def __init__(self):
+        self.weather = WeatherSettings()
+        self.postgres = PostgresSettings()
 
-
-cnf = Settings()
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
