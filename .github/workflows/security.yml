@@ -34,16 +34,16 @@ jobs:
           exit-code: 1
           ignore-unfixed: true
           severity: CRITICAL,HIGH
-          scanners: vuln
+          scanners: vuln,secret,misconfig
           hide-progress: true
 
       # Scan image Postgres
       - name: Scan Postgres image
         uses: aquasecurity/trivy-action@0.24.0
         with:
-          image-ref: postgres:${{ env.POSTGRES_VERSION }}
+          image-ref: postgres:${{ env.PG_TAG }}
           format: table
-          exit-code: 0
+          exit-code: 1
           ignore-unfixed: true
           severity: CRITICAL
           scanners: vuln
