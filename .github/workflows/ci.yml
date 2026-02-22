@@ -26,6 +26,20 @@ jobs:
       - name: Lint
         run: ruff check .
 
+      - name: Prepare environment file
+        run: |
+            cp .env.example .env
+            grep -v '^#' .env > .env.tmp
+            mv .env.tmp .env
+
+      - name: Validate environment variables
+        run: |
+            python - <<EOF
+            from core.config import get_settings
+            get_settings()
+            print("Environment variables validated successfully.")
+            EOF
+
       - name: Run tests
         run: |
             coverage run --omit="tests/*" -m pytest
