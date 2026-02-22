@@ -11,8 +11,8 @@ if __name__ == "__main__":
         data = mock_fetch_data("New York", 1)
         conn = connect_to_db()
         print(conn)
-    except:
-        logging.error("ETL execution failed", exc_info=True)
+    except Exception as e:
+        logging.error(f"ETL execution failed: {e}", exc_info=True)
     finally:
         if conn:
             conn.close()
