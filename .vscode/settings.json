@@ -1,0 +1,33 @@
+{
+  "material-icon-theme.folders.customClones": [
+    {
+      "name": "security-reports",
+      "base": "review",
+      "color": "light-green-900",
+      "lightColor": "light-green-700",
+      "folderNames": ["security_reports"],
+      "rootFolderNames": ["security_reports"]
+    }
+  ],
+
+  "material-icon-theme.files.customClones": [
+    {
+      "name": "rust-lib",
+      "base": "python-misc",
+      "color": "light-blue-900",
+      "fileNames": ["requirements-dev.txt"]
+    },
+    {
+      "name": "security-checks",
+      "base": "shellcheck",
+      "color": "light-green-300",
+      "fileNames": ["trivy_info.txt", "bandit_info.txt"]
+    },
+    {
+      "name": "ignore-files",
+      "base": "git",
+      "color": "light-green-300",
+      "fileNames": [".trivyignore"]
+    }
+  ]
+}
