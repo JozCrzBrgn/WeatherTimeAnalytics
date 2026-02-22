@@ -13,9 +13,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # -------------------------
-      # 1️⃣ Scan filesystem
-      # -------------------------
+      # Cache Trivy DB
+      - name: Cache Trivy DB
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/trivy
+          key: trivy-db
+
+      # Scan filesystem
       - name: Scan filesystem
         uses: aquasecurity/trivy-action@0.24.0
         with:
@@ -25,3 +30,17 @@ jobs:
           exit-code: 1
           ignore-unfixed: true
           severity: CRITICAL,HIGH
+          scanners: vuln
+          hide-progress: true
+
+      # Scan image Postgres
+      - name: Scan Postgres image
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: postgres:14.17
+          format: table
+          exit-code: 1
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+          scanners: vuln
+          hide-progress: true
