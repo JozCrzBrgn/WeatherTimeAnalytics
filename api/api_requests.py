@@ -155,14 +155,14 @@ def mock_fetch_data(city: str = "New York", days_offset: int = 0) -> Dict[str, A
                 "weather_icons": [
                     "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
                 ],
-                "weather_descriptions": [random.choice(weather_descriptions)],
+                "weather_descriptions": [random.choice(weather_descriptions)], # nosec B311 - safe for mock data
                 "astro": {
                     "sunrise": sunrise_time.strftime("%I:%M %p"),
                     "sunset": sunset_time.strftime("%I:%M %p"),
                     "moonrise": sunrise_time.strftime("%I:%M %p"),
                     "moonset": sunset_time.strftime("%I:%M %p"),
-                    "moon_phase": random.choice(moon_phases),
-                    "moon_illumination": random.randint(0, 100),
+                    "moon_phase": random.choice(moon_phases), # nosec B311 - safe for mock data
+                    "moon_illumination": random.randint(0, 100), # nosec B311 - safe for mock data
                 },
                 "air_quality": {
                     "co": f"{round(random.uniform(200, 400), 2)}",
@@ -171,8 +171,8 @@ def mock_fetch_data(city: str = "New York", days_offset: int = 0) -> Dict[str, A
                     "so2": f"{round(random.uniform(1, 10), 2)}",
                     "pm2_5": f"{round(random.uniform(5, 50), 2)}",
                     "pm10": f"{round(random.uniform(5, 80), 2)}",
-                    "us-epa-index": str(random.randint(1, 5)),
-                    "gb-defra-index": str(random.randint(1, 5)),
+                    "us-epa-index": str(random.randint(1, 5)), # nosec B311 - safe for mock data
+                    "gb-defra-index": str(random.randint(1, 5)), # nosec B311 - safe for mock data
                 },
                 "wind_speed": random.randint(0, 80),
                 "wind_degree": random.randint(0, 360),
