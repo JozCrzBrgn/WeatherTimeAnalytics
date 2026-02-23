@@ -1,0 +1,11 @@
+Name                  Stmts   Miss  Cover
+-----------------------------------------
+api\__init__.py           0      0   100%
+api\api_requests.py      44      2    95%
+api\insert_data.py       23      0   100%
+core\__init__.py          0      0   100%
+core\config.py           10      0   100%
+core\postgres.py         10      0   100%
+core\weather.py           6      0   100%
+-----------------------------------------
+TOTAL                    93      2    98%
