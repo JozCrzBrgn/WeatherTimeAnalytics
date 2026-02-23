@@ -1,9 +1,12 @@
 import logging
-
+from datetime import date
 from psycopg2 import Error, connect
 from psycopg2.extensions import connection
 
 from core.config import get_settings
+
+#TODO: from api.api_requests import build_weather_url, fetch_data
+from mocks.api_requests import mock_fetch_data
 
 cnf = get_settings()
 
@@ -19,9 +22,9 @@ def connect_to_db() -> connection:
     """
     try:
         conn = connect(
-            host="localhost",  # Todo: cnf.postgres.host,
-            port="5432",  # Todo: cnf.postgres.port,
-            dbname="postgres",  # Todo: cnf.postgres.dbname,
+            host=cnf.postgres.host,
+            port=cnf.postgres.port,
+            dbname=cnf.postgres.dbname,
             user=cnf.postgres.user,
             password=cnf.postgres.password,
         )
@@ -192,3 +195,45 @@ def insert_weather_records(conn, data):
         conn.rollback()
         logging.error(f"Failed to insert weather data {e}", exc_info=True)
         raise
+
+def main(**context):
+    """
+    Executes the ETL pipeline for weather data.
+
+    This function orchestrates the full ETL workflow:
+        1. Fetch weather data (currently mocked).
+        2. Establish a database connection.
+        3. Create the target table if it does not exist.
+        4. Insert weather records into the database.
+        5. Ensure the database connection is properly closed.
+
+    Logs:
+        - INFO when data is successfully inserted.
+        - ERROR if any step of the ETL process fails.
+        - INFO when the database connection is closed.
+
+    Raises:
+        None. All exceptions are caught and logged.
+    """
+    conn = None
+    try:
+        #TODO: url = build_weather_url("New York")
+        #TODO: data = fetch_data(url)
+        # Use current timestamp as identifier or past value 
+        reference_date = date(2026, 1, 1)
+        current_logical_date = context["logical_date"].date()
+        days_offset = (current_logical_date - reference_date).days
+        base_date = days_offset + 1
+        #TODO: Delete this part 
+        data = mock_fetch_data("New York", base_date) #TODO: Delete this part 
+        conn = connect_to_db()
+        create_table(conn)
+        insert_weather_records(conn, data)
+        logging.info("Successfully data inserted")
+    except Exception as e:
+        logging.error(f"ETL execution failed: {e}", exc_info=True)
+        raise
+    finally:
+        if conn:
+            conn.close()
+            logging.info("Database connection closed")
