@@ -74,9 +74,9 @@ tasks:
       IMAGE: '{{.CLI_ARGS}}'
     cmds:
       - powershell -Command "Write-Host '🔍 Scanning {{.IMAGE}} with Trivy and 🧹 delete file trivy_info.txt if exists...' -ForegroundColor Green"
-      - powershell -Command "if (Test-Path trivy_info.txt) { Remove-Item trivy_info.txt -Force }"
-      - trivy image --severity CRITICAL --scanners vuln --ignore-unfixed --exit-code 1 --format table --no-progress {{.IMAGE}} > trivy_info.txt
-      - powershell -Command "Write-Host '✅ Scan completed. Results saved in trivy_info.txt' -ForegroundColor Green"
+      - powershell -Command "if (Test-Path security_reports/trivy_info.txt) { Remove-Item security_reports/trivy_info.txt -Force }"
+      - trivy image --severity CRITICAL --scanners vuln --ignore-unfixed --exit-code 1 --format table --no-progress {{.IMAGE}} > security_reports/trivy_info.txt
+      - powershell -Command "Write-Host '✅ Scan completed. Results saved in security_reports/trivy_info.txt' -ForegroundColor Green"
 
   # -------------------------
   # BANDIT 
@@ -85,5 +85,21 @@ tasks:
     desc: Detect unsafe Python code => task bandit
     cmds:
       - powershell -Command "Write-Host '👀 Detecting unsafe Python code...' -ForegroundColor Green"
+      - powershell -Command "if (Test-Path  security_reports/bandit_info.txt) { Remove-Item  security_reports/bandit_info.txt -Force }"
       - bandit -r . -lll -x tests,venv,migrations > security_reports/bandit_info.txt
-      - powershell -Command "Write-Host '✅ Scan completed. Results saved in bandit_info.txt' -ForegroundColor Green"
+      - powershell -Command "Write-Host '✅ Scan completed. Results saved in security_reports/bandit_info.txt' -ForegroundColor Green"
+
+  # -------------------------
+  # COVERAGE 
+  # -------------------------
+  cover:
+    desc: Run tests with coverage (requires 90% minimum) => task cover
+    vars:
+      MIN_COVERAGE: '90'
+    cmds:
+      - powershell -Command "Write-Host '🧪 Running tests with coverage analysis ...' -ForegroundColor Cyan"
+      - powershell -Command "if (Test-Path 'security_reports/coverage_info.txt') { Remove-Item 'security_reports/coverage_info.txt' -Force }"
+      - coverage run --omit='tests/*' -m pytest
+      - powershell -Command "Write-Host '📊 Coverage Report:' -ForegroundColor Yellow"
+      - coverage report --fail-under={{.MIN_COVERAGE}} > security_reports/coverage_info.txt
+      - powershell -Command "Write-Host '✅ All tests passed. Results saved in security_reports/coverage_info.txt' -ForegroundColor Green"

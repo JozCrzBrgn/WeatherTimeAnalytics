@@ -21,7 +21,7 @@
       "name": "security-checks",
       "base": "shellcheck",
       "color": "light-green-300",
-      "fileNames": ["trivy_info.txt", "bandit_info.txt"]
+      "fileNames": ["trivy_info.txt", "bandit_info.txt", "coverage_info.txt"]
     },
     {
       "name": "ignore-files",
