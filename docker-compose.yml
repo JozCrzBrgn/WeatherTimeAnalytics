@@ -21,6 +21,53 @@ services:
     networks:
       - etl-network
 
+  af:
+    image: apache/airflow:${AF_TAG}
+    container_name: ${AF_CONTAINER}
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/airflow
+      # Airflow: airflow_db
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/${AF_DB}
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: False
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: True
+      # Postgres: db_weather
+      PG_HOST: ${PG_HOST}
+      PG_PORT: ${PG_PORT}
+      PG_DBNAME: ${PG_DBNAME}
+      PG_USER: ${PG_USER}
+      PG_PASSWORD: ${PG_PASSWORD}
+    ports:
+      - ${AF_PORT_LOCALHOST}:${AF_PORT}
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./api:/opt/airflow/api
+      - ./mocks:/opt/airflow/mocks
+      - ./core:/opt/airflow/core
+      - /var/run/docker.sock:/var/run/docker.sock
+    group_add:
+      - '1001'
+    command: >
+      bash -c "
+      pip install psycopg2-binary pydantic-settings requests apache-airflow-providers-standard &&
+      airflow db migrate &&
+      airflow users create --username ${AF_ADMIN_USER} --firstname Admin --lastname User --role Admin --email ${AF_ADMIN_EMAIL} --password ${AF_ADMIN_PASSWORD} || true &&
+      airflow standalone
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8080/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    networks:
+      - etl-network
+
 networks:
   etl-network:
     driver: bridge
