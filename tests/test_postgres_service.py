@@ -3,9 +3,9 @@ from unittest.mock import MagicMock, patch
 import pytest
 from psycopg2 import Error, connect
 
-from api.api_requests import mock_fetch_data
 from api.insert_data import connect_to_db, create_table, insert_weather_records
 from core.config import get_settings
+from mocks.api_requests import mock_fetch_data
 
 cnf = get_settings()
 

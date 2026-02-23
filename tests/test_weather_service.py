@@ -4,8 +4,9 @@ import pytest
 import requests
 from freezegun import freeze_time
 
-from api.api_requests import build_weather_url, fetch_data, mock_fetch_data
+from api.api_requests import build_weather_url, fetch_data
 from core.config import get_settings
+from mocks.api_requests import mock_fetch_data
 
 cnf = get_settings()
 

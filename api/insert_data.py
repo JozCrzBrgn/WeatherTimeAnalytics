@@ -20,7 +20,7 @@ def connect_to_db() -> connection:
     try:
         conn = connect(
             host="localhost",  # Todo: cnf.postgres.host,
-            port="5433",  # Todo: cnf.postgres.port,
+            port="5432",  # Todo: cnf.postgres.port,
             dbname="postgres",  # Todo: cnf.postgres.dbname,
             user=cnf.postgres.user,
             password=cnf.postgres.password,
