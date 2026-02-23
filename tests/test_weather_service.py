@@ -98,7 +98,7 @@ def test_city_is_used():
     """
     city = "Monterrey"
     data = mock_fetch_data(city)
-    assert data["request"]["query"] == city
+    assert data["request"]["query"] == f"{city}, United States of America"
     assert data["location"]["name"] == city
 
 
@@ -172,7 +172,7 @@ def test_negative_days_offset():
     """
     data = mock_fetch_data("CDMX", days_offset=-1)
     assert "location" in data
-    assert data["request"]["query"] == "CDMX"
+    assert data["request"]["query"] == "CDMX, United States of America"
 
 
 def test_large_days_offset():
@@ -188,7 +188,7 @@ def test_days_offset_zero_is_valid():
     days_offset zero is valid
     """
     data = mock_fetch_data("CDMX", 0)
-    assert data["request"]["query"] == "CDMX"
+    assert data["request"]["query"] == "CDMX, United States of America"
 
 
 def test_days_offset_wrong_type():
@@ -229,3 +229,50 @@ def test_city_valid_with_accent():
     """
     data = mock_fetch_data("São Paulo", 0)
     assert data["location"]["name"] == "São Paulo"
+
+
+def test_mock_fetch_data_nested_structure():
+    """
+    astro + air_quality test
+    """
+    data = mock_fetch_data("CDMX")
+
+    assert "astro" in data["current"]
+    assert "air_quality" in data["current"]
+
+    astro = data["current"]["astro"]
+    air = data["current"]["air_quality"]
+
+    assert "sunrise" in astro
+    assert "sunset" in astro
+    assert "moon_phase" in astro
+
+    assert "co" in air
+    assert "pm2_5" in air
+    assert "us-epa-index" in air
+
+
+@freeze_time("2026-02-13 12:00:00")
+def test_is_day_true():
+    """
+    Is day true test
+    """
+    data = mock_fetch_data("CDMX")
+    assert data["current"]["is_day"] == "yes"
+
+
+@freeze_time("2026-02-13 23:00:00")
+def test_is_day_false():
+    """
+    Is day false test
+    """
+    data = mock_fetch_data("CDMX")
+    assert data["current"]["is_day"] == "no"
+
+
+def test_localtime_epoch_is_int():
+    """
+    Validate epoch format
+    """
+    data = mock_fetch_data("CDMX")
+    assert isinstance(data["location"]["localtime_epoch"], int)
