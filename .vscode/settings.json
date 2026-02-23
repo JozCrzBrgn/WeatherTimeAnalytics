@@ -7,6 +7,14 @@
       "lightColor": "light-green-700",
       "folderNames": ["security_reports"],
       "rootFolderNames": ["security_reports"]
+    },
+    {
+      "name": "airflow",
+      "base": "atom",
+      "color": "light-blue-900",
+      "lightColor": "light-blue-700",
+      "folderNames": ["airflow"],
+      "rootFolderNames": ["airflow"]
     }
   ],
 
