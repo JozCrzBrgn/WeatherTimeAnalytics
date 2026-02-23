@@ -1,11 +1,12 @@
-Name                  Stmts   Miss  Cover
------------------------------------------
-api\__init__.py           0      0   100%
-api\api_requests.py      23      2    91%
-api\insert_data.py       39      0   100%
-core\__init__.py          0      0   100%
-core\config.py           10      0   100%
-core\postgres.py         10      0   100%
-core\weather.py           6      0   100%
------------------------------------------
-TOTAL                    88      2    98%
+Name                           Stmts   Miss  Cover
+--------------------------------------------------
+airflow\dags\orchestrator.py      12      0   100%
+api\__init__.py                    0      0   100%
+api\api_requests.py               23      2    91%
+api\insert_data.py                53      0   100%
+core\__init__.py                   0      0   100%
+core\config.py                    10      0   100%
+core\postgres.py                  10      0   100%
+core\weather.py                    6      0   100%
+--------------------------------------------------
+TOTAL                            114      2    98%
