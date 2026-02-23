@@ -103,3 +103,20 @@ tasks:
       - powershell -Command "Write-Host '📊 Coverage Report:' -ForegroundColor Yellow"
       - coverage report --fail-under={{.MIN_COVERAGE}} > security_reports/coverage_info.txt
       - powershell -Command "Write-Host '✅ All tests passed. Results saved in security_reports/coverage_info.txt' -ForegroundColor Green"
+
+  # -------------------------
+  # DOCKER 
+  # -------------------------
+  up:
+    desc: docker-compose up -d => task up
+    cmds:
+      - powershell -Command "Write-Host '🐳 Raising docker ...' -ForegroundColor Green"
+      - docker-compose up -d
+      - powershell -Command "Write-Host '✅ Docker compose up.' -ForegroundColor Green"
+  
+  down:
+    desc: docker-compose down -v => task up
+    cmds:
+      - powershell -Command "Write-Host '🐳 Turning off docker ...' -ForegroundColor Green"
+      - docker-compose down -v
+      - powershell -Command "Write-Host '✅ Docker compose down.' -ForegroundColor Green"
