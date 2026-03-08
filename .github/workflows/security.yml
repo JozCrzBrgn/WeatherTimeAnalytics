@@ -52,6 +52,18 @@ jobs:
           scanners: vuln
           hide-progress: true
 
+      # Scan Airflow image
+      - name: Scan Airflow image
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: apache/airflow:${{ env.AF_TAG }}
+          format: table
+          exit-code: 1
+          ignore-unfixed: true
+          severity: CRITICAL
+          scanners: vuln
+          hide-progress: true
+
   # =========================
   # 2️⃣ BANDIT (Unsafe code)
   # =========================
