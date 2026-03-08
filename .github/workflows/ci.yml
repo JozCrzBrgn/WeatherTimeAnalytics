@@ -38,15 +38,16 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:14
         env:
-          POSTGRES_USER: pguser
-          POSTGRES_PASSWORD: pgpassword
-          POSTGRES_DB: postgres
+          PG_HOST: localhost
+          POSTGRES_USER: ${{ vars.PG_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.PG_PASSWORD }}
+          POSTGRES_DB: ${{ vars.PG_DBNAME }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U pguser"
+          --health-cmd="pg_isready -U ${{ vars.PG_USER }}"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
