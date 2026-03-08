@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -92,7 +93,11 @@ def test_main_success(mock_fetch, mock_connect, mock_create, mock_insert):
     mock_conn = MagicMock()
     mock_connect.return_value = mock_conn
 
-    api.insert_data.main()
+    context = {
+        "logical_date": datetime(2026, 2, 13, 12, tzinfo=timezone.utc)
+    }
+
+    api.insert_data.main(**context)
 
     mock_fetch.assert_called_once()
     mock_connect.assert_called_once()
@@ -115,7 +120,12 @@ def test_main_closes_connection_on_error(mock_fetch, mock_connect, mock_create, 
 
     mock_insert.side_effect = Exception("Insert failed")
 
-    api.insert_data.main()
+    context = {
+        "logical_date": datetime(2026, 2, 13, 12, tzinfo=timezone.utc)
+    }
+
+    with pytest.raises(Exception):
+        api.insert_data.main(**context)
 
     mock_conn.close.assert_called_once()
 
@@ -127,4 +137,9 @@ def test_main_no_connection_no_close(mock_connect):
     """
     mock_connect.side_effect = Exception("DB down")
 
-    api.insert_data.main()
+    context = {
+        "logical_date": datetime(2026, 2, 13, 12, tzinfo=timezone.utc)
+    }
+
+    with pytest.raises(Exception, match="DB down"):
+        api.insert_data.main(**context)

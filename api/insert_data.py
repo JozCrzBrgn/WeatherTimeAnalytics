@@ -1,5 +1,5 @@
 import logging
-from datetime import date
+
 from psycopg2 import Error, connect
 from psycopg2.extensions import connection
 
@@ -220,12 +220,8 @@ def main(**context):
         #TODO: url = build_weather_url("New York")
         #TODO: data = fetch_data(url)
         # Use current timestamp as identifier or past value 
-        reference_date = date(2026, 1, 1)
-        current_logical_date = context["logical_date"].date()
-        days_offset = (current_logical_date - reference_date).days
-        base_date = days_offset + 1
-        #TODO: Delete this part 
-        data = mock_fetch_data("New York", base_date) #TODO: Delete this part 
+        logical_date = context["logical_date"]
+        data = mock_fetch_data("New York", base_datetime=logical_date) #TODO: Delete this part 
         conn = connect_to_db()
         create_table(conn)
         insert_weather_records(conn, data)

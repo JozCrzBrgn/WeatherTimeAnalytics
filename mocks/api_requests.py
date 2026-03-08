@@ -6,16 +6,13 @@ from typing import Any, Dict
 
 CITY_REGEX = re.compile(r"^[A-Za-zÀ-ÿ\s\-]+$")
 
-def mock_fetch_data(city: str = "New York", days_offset: int = 0) -> Dict[str, Any]:
+def mock_fetch_data(city: str = "New York", base_datetime: datetime | None = None) -> Dict[str, Any]:
     """
     Generate mock weather data.
 
     Args:
         city (str): City name.
-        days_offset (int): Days relative to today.
-                            0 = today
-                            1 = tomorrow
-                            -1 = yesterday
+        base_datetime (datetime): Base datetime used to simulate the observation time.
 
     Returns:
         Dict[str, Any]: Mock weather response.
@@ -27,19 +24,14 @@ def mock_fetch_data(city: str = "New York", days_offset: int = 0) -> Dict[str, A
         if not CITY_REGEX.match(city):
             raise ValueError("City contains invalid characters")
 
-        if not isinstance(days_offset, int):
-            raise TypeError("days_offset must be an integer")
-
-        now_utc = datetime.now(timezone.utc)
-
-        # Aplicamos offset de días
-        base_date = now_utc + timedelta(days=days_offset)
+        if base_datetime is None:
+            base_datetime = datetime.now(timezone.utc)
 
         # Offset de zona horaria aleatorio
         utc_offset = "-5.0"
         offset_hours = float(utc_offset)
 
-        local_time = base_date + timedelta(hours=offset_hours)
+        local_time = base_datetime + timedelta(hours=offset_hours)
 
         sunrise_time = local_time.replace(hour=6, minute=50)
         sunset_time = local_time.replace(hour=17, minute=31)
@@ -124,7 +116,7 @@ def mock_fetch_data(city: str = "New York", days_offset: int = 0) -> Dict[str, A
 
         logging.info(
             "Mock weather data generated",
-            extra={"city": city, "days_offset": days_offset},
+            extra={"city": city, "local_time": local_time.strftime("%Y-%m-%d %H:%M")},
         )
 
         return data

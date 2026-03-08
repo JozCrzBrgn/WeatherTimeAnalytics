@@ -1,4 +1,5 @@
 import random
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from freezegun import freeze_time
@@ -32,11 +33,12 @@ def test_city_is_used():
 @freeze_time("2026-02-13 12:00:00")
 def test_days_offset():
     """
-    Change the date using days_offset
+    Changing base_datetime should change localtime
     """
-    data_today = mock_fetch_data("CDMX", 0)
-    data_tomorrow = mock_fetch_data("CDMX", 1)
-    assert data_today["location"]["localtime"] != data_tomorrow["location"]["localtime"]
+    base = datetime(2026, 2, 13, 12, 0, tzinfo=timezone.utc)
+    data_today = mock_fetch_data("CDMX", base)
+    data_next_hour = mock_fetch_data("CDMX", base + timedelta(hours=1))
+    assert data_today["location"]["localtime"] != data_next_hour["location"]["localtime"]
 
 
 def test_temperature_range():
@@ -93,34 +95,9 @@ def test_deterministic_output():
     assert data1["current"]["visibility"] == data2["current"]["visibility"]
 
 
-def test_negative_days_offset():
-    """
-    Validate that it does not explode with negative values
-    """
-    data = mock_fetch_data("CDMX", days_offset=-1)
-    assert "location" in data
-    assert data["request"]["query"] == "CDMX, United States of America"
-
-
-def test_large_days_offset():
-    """
-    Detect potential overflow or format problems
-    """
-    data = mock_fetch_data("CDMX", days_offset=365)
-    assert "localtime" in data["location"]
-
-
-def test_days_offset_zero_is_valid():
-    """
-    days_offset zero is valid
-    """
-    data = mock_fetch_data("CDMX", 0)
-    assert data["request"]["query"] == "CDMX, United States of America"
-
-
 def test_days_offset_wrong_type():
     """
-    days_offset wrong type
+    base_datetime wrong type
     """
     with pytest.raises(TypeError):
         mock_fetch_data("CDMX", "mañana")
@@ -154,7 +131,8 @@ def test_city_valid_with_accent():
     """
     City with accent
     """
-    data = mock_fetch_data("São Paulo", 0)
+    dt = datetime(2026, 2, 13, 12, tzinfo=timezone.utc)
+    data = mock_fetch_data("São Paulo", dt)
     assert data["location"]["name"] == "São Paulo"
 
 
@@ -203,3 +181,13 @@ def test_localtime_epoch_is_int():
     """
     data = mock_fetch_data("CDMX")
     assert isinstance(data["location"]["localtime_epoch"], int)
+
+
+def test_hourly_progression():
+    """
+    Simulate hourly pipeline execution
+    """
+    base = datetime(2026, 1, 1, 0, tzinfo=timezone.utc)
+    data1 = mock_fetch_data("CDMX", base)
+    data2 = mock_fetch_data("CDMX", base + timedelta(hours=1))
+    assert data1["location"]["localtime"] != data2["location"]["localtime"]

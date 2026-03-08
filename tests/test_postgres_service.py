@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -78,8 +79,8 @@ def test_create_table_integration():
     """
     conn = connect(
             host="localhost",  # Todo: cnf.postgres.host,
-            port="5432",  # Todo: cnf.postgres.port,
-            dbname="postgres",  # Todo: cnf.postgres.dbname,
+            port=cnf.postgres.port,
+            dbname=cnf.postgres.dbname,
             user=cnf.postgres.user,
             password=cnf.postgres.password,
         )
@@ -107,7 +108,9 @@ def test_insert_weather_records_success():
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
-    sample_weather_data = mock_fetch_data("New York", 1)
+    dt = datetime(2026, 2, 13, 12, tzinfo=timezone.utc)
+    sample_weather_data = mock_fetch_data("New York", dt)
+
     insert_weather_records(mock_conn, sample_weather_data)
 
     mock_cursor.execute.assert_called_once()
@@ -123,7 +126,8 @@ def test_insert_weather_records_params():
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
-    sample_weather_data = mock_fetch_data("New York", 1)
+    dt = datetime(2026, 2, 13, 12, tzinfo=timezone.utc)
+    sample_weather_data = mock_fetch_data("New York", dt)
     insert_weather_records(mock_conn, sample_weather_data)
 
     args, kwargs = mock_cursor.execute.call_args
@@ -170,7 +174,8 @@ def test_insert_weather_records_failure():
     mock_cursor.execute.side_effect = Error("DB failure")
 
     with pytest.raises(Error):
-        sample_weather_data = mock_fetch_data("New York", 1)
+        dt = datetime(2026, 2, 13, 12, tzinfo=timezone.utc)
+        sample_weather_data = mock_fetch_data("New York", dt)
         insert_weather_records(mock_conn, sample_weather_data)
 
     mock_conn.rollback.assert_called_once()
@@ -185,7 +190,8 @@ def test_insert_query_contains_table():
     mock_cursor = MagicMock()
     mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
 
-    sample_weather_data = mock_fetch_data("New York", 1)
+    dt = datetime(2026, 2, 13, 12, tzinfo=timezone.utc)
+    sample_weather_data = mock_fetch_data("New York", dt)
     insert_weather_records(mock_conn, sample_weather_data)
 
     query_passed = mock_cursor.execute.call_args[0][0]
