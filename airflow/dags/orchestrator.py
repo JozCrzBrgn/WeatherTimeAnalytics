@@ -12,7 +12,7 @@ from api.insert_data import main
 with DAG(
     dag_id="weather-orchestrator",
     start_date=datetime(2024, 1, 1),
-    schedule="@daily",
+    schedule="@hourly",
     catchup=False,
     tags=["etl", "weather"],
 ) as dag:
