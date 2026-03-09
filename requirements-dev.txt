@@ -2,7 +2,7 @@
 
 pytest~=9.0
 freezegun~=1.5
-ruff~=0.15.2
+ruff~=0.15.5
 coverage~=7.13.4
 bandit~=1.9.3
 apache-airflow~=2.11.1
