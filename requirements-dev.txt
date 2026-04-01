@@ -2,8 +2,8 @@
 
 pytest~=9.0
 freezegun~=1.5
-ruff~=0.15.5
-coverage~=7.13.4
+ruff~=0.15.8
+coverage~=7.13.5
 bandit~=1.9.4
-apache-airflow~=2.11.1
-apache-airflow-providers-standard~=1.11.1
+apache-airflow~=2.11.2
+apache-airflow-providers-standard~=1.12.2
